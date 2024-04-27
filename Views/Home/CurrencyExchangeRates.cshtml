@@ -9,6 +9,6 @@
     <h2>@bank.bankName</h2>
     foreach (ExchangeRate exchangeRate in bank.rates)
     {
-        <h2>@exchangeRate.currency: @exchangeRate.sellRate/@exchangeRate.buyRate</h2>
+        <h2>@exchangeRate.currency: @exchangeRate.buyRate/@exchangeRate.sellRate</h2>
     }
 }

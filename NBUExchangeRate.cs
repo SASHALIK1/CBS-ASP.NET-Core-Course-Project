@@ -6,7 +6,6 @@
         public string txt { get; set; }
         public float rate { get; set; }
         public string cc { get; set; }
-        public string exchangedate { get; set;}
-
+        public string exchangedate { get; set; }
     }
 }

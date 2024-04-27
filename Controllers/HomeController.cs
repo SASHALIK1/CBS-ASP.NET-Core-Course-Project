@@ -34,12 +34,17 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             BankRates NBURates = new BankRates("NBU");
             NBURates.rates.Add(await _exchangeRateService.GetNBUExchangeRateAsync("usd"));
             NBURates.rates.Add(await _exchangeRateService.GetNBUExchangeRateAsync("eur"));
+
+            BankRates OschadRates = new BankRates("OschadBank");
+            OschadRates.rates.Add(await _exchangeRateService.GetOschadBankExchangeRateAsync("usd"));
+            OschadRates.rates.Add(await _exchangeRateService.GetOschadBankExchangeRateAsync("eur"));
             //var model = new ExchangeRatesViewModel();
 
             List<BankRates> _banks = new List<BankRates>();
             _banks.Add(monobankRates);
             _banks.Add(privatRates);
             _banks.Add(NBURates);
+            _banks.Add(OschadRates);
             return View(new ExchangeRatesViewModel
             {
                 banks = _banks

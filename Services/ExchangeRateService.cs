@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.Json;
+using HtmlAgilityPack;
 
 namespace CBS_ASP.NET_Core_Course_Project.Services
 {
@@ -79,6 +80,29 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             }
 
             return new ExchangeRate("usd", 39, 40);
+        }
+        public async Task<ExchangeRate> GetOschadBankExchangeRateAsync(string currencyName)
+        {
+            string responseString = await _httpClient.GetStringAsync("https://www.oschadbank.ua/");
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(responseString);
+
+            var eurItem = doc.DocumentNode.SelectSingleNode("//div[@class='currency__item']/span[@class='currency__item_name'][text()='EUR']/..");
+            var usdItem = doc.DocumentNode.SelectSingleNode("//div[@class='currency__item']/span[@class='currency__item_name'][text()='USD']/..");
+
+            if (currencyName == "usd")
+            {
+                var usdBuyRate = usdItem.SelectSingleNode(".//span[@class='currency__item_value'][1]/span").InnerText;
+                var usdSellRate = usdItem.SelectSingleNode(".//span[@class='currency__item_value'][2]/span").InnerText;
+                return new ExchangeRate("usd", float.Parse(usdBuyRate.Replace('.', ',')), float.Parse(usdSellRate.Replace('.', ',')));
+            }
+            else if (currencyName == "eur")
+            {
+                var eurBuyRate = eurItem.SelectSingleNode(".//span[@class='currency__item_value'][1]/span").InnerText;
+                var eurSellRate = eurItem.SelectSingleNode(".//span[@class='currency__item_value'][2]/span").InnerText;
+                return new ExchangeRate("eur", float.Parse(eurBuyRate.Replace('.', ',')), float.Parse(eurSellRate.Replace('.', ',')));
+            }
+            return new ExchangeRate("usd", 5, 40);
         }
     }
 }
