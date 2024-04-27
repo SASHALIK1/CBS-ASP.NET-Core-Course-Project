@@ -1,3 +1,5 @@
+using CBS_ASP.NET_Core_Course_Project.Services;
+
 namespace CBS_ASP.NET_Core_Course_Project
 {
     public class Program
@@ -8,7 +10,8 @@ namespace CBS_ASP.NET_Core_Course_Project
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddHttpClient<ExchangeRateService>();
+            //< IMyDependency, MyDependency > ();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -18,6 +21,7 @@ namespace CBS_ASP.NET_Core_Course_Project
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            //app.AddHttpClient<IExchangeRateService, ExchangeRateService>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

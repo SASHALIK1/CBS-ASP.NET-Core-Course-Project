@@ -1,0 +1,14 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ExchangeRatesViewModel
+@foreach (BankRates bank in Model.banks)
+{
+    <h2>@bank.bankName</h2>
+    foreach (ExchangeRate exchangeRate in bank.rates)
+    {
+        <h2>@exchangeRate.currency: @exchangeRate.sellRate/@exchangeRate.buyRate</h2>
+    }
+}
