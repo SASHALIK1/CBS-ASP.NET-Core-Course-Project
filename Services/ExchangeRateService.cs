@@ -4,12 +4,6 @@ using HtmlAgilityPack;
 
 namespace CBS_ASP.NET_Core_Course_Project.Services
 {
-    //public interface IExchangeRateService
-    //{
-    //    Task<ExchangeRate> GetMonobankExchangeRateAsync();
-    //    Task<ExchangeRate> GetPrivatBankExchangeRateAsync();
-    //    Task<ExchangeRate> GetNBUExchangeRateAsync();
-    //}
     public class ExchangeRateService
     {
         private readonly HttpClient _httpClient;
@@ -44,7 +38,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
                 }
             }
 
-
             return new ExchangeRate("usd", 5, 5);
         }
 
@@ -65,7 +58,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
 
             return new ExchangeRate("usd", 5, 5);
         }
-
         public async Task<ExchangeRate> GetNBUExchangeRateAsync(string currencyName)
         {
             string responseString = await _httpClient.GetStringAsync("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
@@ -103,6 +95,23 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
                 return new ExchangeRate("eur", float.Parse(eurBuyRate.Replace('.', ',')), float.Parse(eurSellRate.Replace('.', ',')));
             }
             return new ExchangeRate("usd", 5, 40);
+        }
+
+        public async Task<ExchangeRate> GetBankExchangeRateAsync(string currencyName, string bankName)
+        {
+            string responseString = await _httpClient.GetStringAsync($"https://minfin.com.ua/ua/currency/banks/{currencyName}/");
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(responseString);
+
+            HtmlNode row = doc.DocumentNode.SelectSingleNode($"//td[contains(@class, 'js-ex-rates') and contains(@class, 'mfcur-table-bankname') and contains(a/@href, '{bankName}')]");
+
+            HtmlNode buyRateNode = row.SelectSingleNode(".//following-sibling::td[contains(@class, 'mfm-text-right')]");
+            string buyRate = buyRateNode.InnerText.Trim();
+
+            HtmlNode sellRateNode = row.SelectSingleNode(".//following-sibling::td[contains(@class, 'mfm-text-left')]");
+            string sellRate = sellRateNode.InnerText.Trim();
+
+            return new ExchangeRate(currencyName, float.Parse(buyRate.Replace('.', ',')), float.Parse(sellRate.Replace('.', ',')));
         }
     }
 }

@@ -4,6 +4,11 @@
 @{
 }
 @model ExchangeRatesViewModel
+<h2>Курси Національного банку України:</h2>
+@foreach (ExchangeRate exchangeRates in Model.nbuRates.rates)
+{
+    <h2>@exchangeRates.currency: @exchangeRates.buyRate</h2>
+}
 @foreach (BankRates bank in Model.banks)
 {
     <h2>@bank.bankName</h2>

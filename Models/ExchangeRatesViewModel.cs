@@ -2,6 +2,7 @@
 {
     public class ExchangeRatesViewModel
     {
+        public BankRates nbuRates { get; set; }
         public List<BankRates> banks { get; set; }
     }
 }
