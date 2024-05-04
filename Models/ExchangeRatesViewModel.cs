@@ -4,5 +4,11 @@
     {
         public BankRates nbuRates { get; set; }
         public List<BankRates> banks { get; set; }
+
+        public ExchangeRatesViewModel (BankRates nbuRates, List<BankRates> banks)
+        {
+            this.nbuRates = nbuRates;
+            this.banks = banks;
+        }
     }
 }

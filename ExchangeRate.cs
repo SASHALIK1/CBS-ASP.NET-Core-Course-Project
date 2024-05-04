@@ -29,6 +29,10 @@
             this.buyRate = buyRate;
             this.sellRate = sellRate;
         }
+        public ExchangeRate()
+        {
+
+        }
 
     }
 }

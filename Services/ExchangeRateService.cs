@@ -1,30 +1,42 @@
 ﻿using System.Globalization;
 using System.Text.Json;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CBS_ASP.NET_Core_Course_Project.Services
 {
     public class ExchangeRateService
     {
         private readonly HttpClient _httpClient;
+        private readonly IMemoryCache _cache;
+        private const int cacheSaveMinutes = 5;
 
-        public ExchangeRateService(HttpClient httpClient)
+        public ExchangeRateService(HttpClient httpClient, IMemoryCache cache)
         {
             _httpClient = httpClient;
+            _cache = cache;
         }
 
         public async Task<ExchangeRate> GetMonobankExchangeRateAsync(string currencyName)
         {
-            string responseString = await _httpClient.GetStringAsync("https://api.monobank.ua/bank/currency");
+            const string cacheKey = "MonobankAPI";
+            string responseString;
+            if (!_cache.TryGetValue(cacheKey, out string cachedResponseString))
+            {
+                responseString = await _httpClient.GetStringAsync("https://api.monobank.ua/bank/currency");
+                _cache.Set(cacheKey, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+            }
+            else
+            {
+                responseString = (string)cachedResponseString;
+            }
             List<MonobankCurrencyRate> deserializedString = JsonSerializer.Deserialize<List<MonobankCurrencyRate>>(responseString);
-
             foreach (MonobankCurrencyRate currency in deserializedString)
             {
                 if (currencyName == "usd")
                 {
                     if (currency.currencyCodeA == 840 && currency.currencyCodeB == 980)
                     {
-                        Console.WriteLine(currency.currencyCodeA);
                         return new ExchangeRate("usd", currency.rateBuy, currency.rateSell);
                     }
                 }
@@ -32,22 +44,30 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
                 {
                     if (currency.currencyCodeA == 978 && currency.currencyCodeB == 980)
                     {
-                        Console.WriteLine(currency.currencyCodeA);
                         return new ExchangeRate("eur", currency.rateBuy, currency.rateSell);
                     }
                 }
             }
-
             return new ExchangeRate("usd", 5, 5);
         }
 
 
         public async Task<ExchangeRate> GetPrivatBankExchangeRateAsync(string currencyName)
         {
-            string responseString = await _httpClient.GetStringAsync("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11");
+            const string cacheKey = "PrivatbankAPI";
+            string responseString;
+            if (!_cache.TryGetValue(cacheKey, out string cachedResponseString))
+            {
+                responseString = await _httpClient.GetStringAsync("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11");
+                _cache.Set(cacheKey, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+            }
+            else
+            {
+                responseString = (string)cachedResponseString;
+            }
             List<PrivatbankCurrencyRate> deserializedString = JsonSerializer.Deserialize<List<PrivatbankCurrencyRate>>(responseString);
-
-
+            ExchangeRate exchangeRate = new ExchangeRate();
+            
             foreach (PrivatbankCurrencyRate currency in deserializedString)
             {
                 if (currency.ccy == currencyName.ToUpper())
@@ -55,12 +75,21 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
                     return new ExchangeRate(currencyName, float.Parse(currency.buy.Replace('.', ',')), float.Parse(currency.sale.Replace('.', ',')));
                 }
             }
-
-            return new ExchangeRate("usd", 5, 5);
+            return new ExchangeRate("usd", 2, 2);
         }
         public async Task<ExchangeRate> GetNBUExchangeRateAsync(string currencyName)
         {
-            string responseString = await _httpClient.GetStringAsync("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
+            const string cacheKey = "nbuAPI";
+            string responseString;
+            if (!_cache.TryGetValue(cacheKey, out string cachedResponseString))
+            {
+                responseString = await _httpClient.GetStringAsync("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json");
+                _cache.Set(cacheKey, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+            }
+            else
+            {
+                responseString = (string)cachedResponseString;
+            }
             List<NBUExchangeRate> deserializedString = JsonSerializer.Deserialize<List<NBUExchangeRate>>(responseString);
 
             foreach (NBUExchangeRate currency in deserializedString)
@@ -75,7 +104,18 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
         }
         public async Task<ExchangeRate> GetOschadBankExchangeRateAsync(string currencyName)
         {
-            string responseString = await _httpClient.GetStringAsync("https://www.oschadbank.ua/");
+            const string cacheKey = "OschadbankAPI";
+            string responseString;
+            if (!_cache.TryGetValue(cacheKey, out string cachedResponseString))
+            {
+                responseString = await _httpClient.GetStringAsync("https://www.oschadbank.ua/");
+                _cache.Set(cacheKey, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+            }
+            else
+            {
+                responseString = (string)cachedResponseString;
+            }
+
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(responseString);
 
@@ -99,7 +139,34 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
 
         public async Task<ExchangeRate> GetBankExchangeRateAsync(string currencyName, string bankName)
         {
-            string responseString = await _httpClient.GetStringAsync($"https://minfin.com.ua/ua/currency/banks/{currencyName}/");
+            const string cacheKeyUSD = "minfinUsdAPI";
+            const string cacheKeyEUR = "minfinEurAPI";
+            string responseString;
+
+            if (currencyName == "usd")
+            {
+                if (!_cache.TryGetValue(cacheKeyUSD, out string cachedResponseString))
+                {
+                    responseString = await _httpClient.GetStringAsync("https://minfin.com.ua/ua/currency/banks/usd/");
+                    _cache.Set(cacheKeyUSD, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+                }
+                else
+                {
+                    responseString = (string)cachedResponseString;
+                }
+            }
+            else //eur
+            {
+                if (!_cache.TryGetValue(cacheKeyEUR, out string cachedResponseString))
+                {
+                    responseString = await _httpClient.GetStringAsync("https://minfin.com.ua/ua/currency/banks/eur/");
+                    _cache.Set(cacheKeyEUR, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
+                }
+                else
+                {
+                    responseString = (string)cachedResponseString;
+                }
+            }
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(responseString);
 

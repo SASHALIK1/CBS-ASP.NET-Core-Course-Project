@@ -1,7 +1,9 @@
 using CBS_ASP.NET_Core_Course_Project.Models;
 using CBS_ASP.NET_Core_Course_Project.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
+
 
 namespace CBS_ASP.NET_Core_Course_Project.Controllers
 {
@@ -31,6 +33,11 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             monobankRates.rates.Add(await _exchangeRateService.GetMonobankExchangeRateAsync("usd"));
             monobankRates.rates.Add(await _exchangeRateService.GetMonobankExchangeRateAsync("eur"));
 
+            //BankRates monobankRates = new BankRates("Monobank");
+            //monobankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "monobank"));
+            //monobankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "monobank"));
+
+
             BankRates privatRates = new BankRates("Privatbank");
             privatRates.rates.Add(await _exchangeRateService.GetPrivatBankExchangeRateAsync("usd"));
             privatRates.rates.Add(await _exchangeRateService.GetPrivatBankExchangeRateAsync("eur"));
@@ -54,7 +61,7 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             BankRates iziBankRates = new BankRates("Izibank");
             iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "izibank"));
             iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "izibank"));
-            
+
             BankRates sensebankRates = new BankRates("sensebank");
             sensebankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "sensebank"));
             sensebankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "sensebank"));
@@ -68,11 +75,7 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             _banks.Add(aBankRates);
             _banks.Add(iziBankRates);
             _banks.Add(sensebankRates);
-            return View(new ExchangeRatesViewModel
-            {
-                nbuRates = NBURates,
-                banks = _banks
-            });
+            return View(new ExchangeRatesViewModel(NBURates, _banks));
         }
 
         public IActionResult Privacy()
