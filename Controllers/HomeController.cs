@@ -33,11 +33,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             monobankRates.rates.Add(await _exchangeRateService.GetMonobankExchangeRateAsync("usd"));
             monobankRates.rates.Add(await _exchangeRateService.GetMonobankExchangeRateAsync("eur"));
 
-            //BankRates monobankRates = new BankRates("Monobank");
-            //monobankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "monobank"));
-            //monobankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "monobank"));
-
-
             BankRates privatRates = new BankRates("Privatbank");
             privatRates.rates.Add(await _exchangeRateService.GetPrivatBankExchangeRateAsync("usd"));
             privatRates.rates.Add(await _exchangeRateService.GetPrivatBankExchangeRateAsync("eur"));
@@ -75,6 +70,7 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             _banks.Add(aBankRates);
             _banks.Add(iziBankRates);
             _banks.Add(sensebankRates);
+
             return View(new ExchangeRatesViewModel(NBURates, _banks));
         }
 

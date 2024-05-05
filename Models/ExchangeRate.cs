@@ -1,4 +1,4 @@
-﻿namespace CBS_ASP.NET_Core_Course_Project
+﻿namespace CBS_ASP.NET_Core_Course_Project.Models
 {
 
     public class ExchangeRate
@@ -7,10 +7,10 @@
         private float _buyRate;
         private float _sellRate;
 
-        public string currency 
-        { 
+        public string currency
+        {
             get { return _currency; }
-            set {  _currency = value.ToUpper(); }
+            set { _currency = value.ToUpper(); }
         }
         public float buyRate
         {

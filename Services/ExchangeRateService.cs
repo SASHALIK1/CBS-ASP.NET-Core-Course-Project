@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.Json;
+using CBS_ASP.NET_Core_Course_Project.Models;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Memory;
 

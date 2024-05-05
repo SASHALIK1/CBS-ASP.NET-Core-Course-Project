@@ -11,4 +11,8 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.60" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>
