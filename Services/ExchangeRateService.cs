@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using CBS_ASP.NET_Core_Course_Project.Models;
 using HtmlAgilityPack;
@@ -142,13 +144,27 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
         {
             const string cacheKeyUSD = "minfinUsdAPI";
             const string cacheKeyEUR = "minfinEurAPI";
+
+            string usdUrl = "https://minfin.com.ua/ua/currency/banks/eur/";
+            string eurUrl = "https://minfin.com.ua/ua/currency/banks/usd/";
+
+            string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36";
+
             string responseString;
 
+            HtmlDocument doc = new HtmlDocument();
             if (currencyName == "usd")
             {
                 if (!_cache.TryGetValue(cacheKeyUSD, out string cachedResponseString))
                 {
-                    responseString = await _httpClient.GetStringAsync("https://minfin.com.ua/ua/currency/banks/usd/");
+                    HttpClient client = new HttpClient();
+
+                    client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
+                    HttpResponseMessage response = await client.GetAsync(usdUrl);
+
+                    responseString = await response.Content.ReadAsStringAsync();
+
                     _cache.Set(cacheKeyUSD, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
                 }
                 else
@@ -160,7 +176,14 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             {
                 if (!_cache.TryGetValue(cacheKeyEUR, out string cachedResponseString))
                 {
-                    responseString = await _httpClient.GetStringAsync("https://minfin.com.ua/ua/currency/banks/eur/");
+                    HttpClient client = new HttpClient();
+
+                    client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
+                    HttpResponseMessage response = await client.GetAsync(eurUrl);
+
+                    responseString = await response.Content.ReadAsStringAsync();
+
                     _cache.Set(cacheKeyEUR, responseString, TimeSpan.FromMinutes(cacheSaveMinutes));
                 }
                 else
@@ -168,7 +191,7 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
                     responseString = (string)cachedResponseString;
                 }
             }
-            HtmlDocument doc = new HtmlDocument();
+            
             doc.LoadHtml(responseString);
 
             HtmlNode row = doc.DocumentNode.SelectSingleNode($"//td[contains(@class, 'js-ex-rates') and contains(@class, 'mfcur-table-bankname') and contains(a/@href, '{bankName}')]");
