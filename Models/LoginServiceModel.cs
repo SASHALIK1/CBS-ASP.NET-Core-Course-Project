@@ -1,4 +1,4 @@
-﻿namespace CBS_ASP.NET_Core_Course_Project
+﻿namespace CBS_ASP.NET_Core_Course_Project.Models
 {
     public class LoginServiceModel
     {

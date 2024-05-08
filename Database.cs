@@ -1,4 +1,6 @@
-﻿namespace CBS_ASP.NET_Core_Course_Project
+﻿using CBS_ASP.NET_Core_Course_Project.Models;
+
+namespace CBS_ASP.NET_Core_Course_Project
 {
     public static class Database
     {
