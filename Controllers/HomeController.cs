@@ -45,17 +45,17 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             pumbRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "pumb"));
             pumbRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "pumb"));
 
-            BankRates otpRates = new BankRates("Otpbank");
-            otpRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "otp-bank"));
-            otpRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "otp-bank"));
+            //BankRates otpRates = new BankRates("Otpbank");
+            //otpRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "otp-bank"));
+            //otpRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "otp-bank"));
 
             BankRates aBankRates = new BankRates("A-Bank");
             aBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "a-bank"));
             aBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "a-bank"));
 
-            BankRates iziBankRates = new BankRates("Izibank");
-            iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "izibank"));
-            iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "izibank"));
+            //BankRates iziBankRates = new BankRates("Izibank");
+            //iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "izibank"));
+            //iziBankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("eur", "izibank"));
 
             BankRates sensebankRates = new BankRates("sensebank");
             sensebankRates.rates.Add(await _exchangeRateService.GetBankExchangeRateAsync("usd", "sensebank"));
@@ -66,9 +66,9 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             _banks.Add(privatRates);
             _banks.Add(OschadRates);
             _banks.Add(pumbRates);
-            _banks.Add(otpRates);
+            //_banks.Add(otpRates);
             _banks.Add(aBankRates);
-            _banks.Add(iziBankRates);
+            //_banks.Add(iziBankRates);
             _banks.Add(sensebankRates);
 
             return View(new ExchangeRatesViewModel(NBURates, _banks));

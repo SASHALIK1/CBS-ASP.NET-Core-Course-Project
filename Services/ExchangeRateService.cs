@@ -20,6 +20,53 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             _cache = cache;
         }
 
+        public async Task<List<BankRates>> GetAllExchangeRates()
+        {
+            BankRates monobankRates = new BankRates("Monobank");
+            monobankRates.rates.Add(await GetMonobankExchangeRateAsync("usd"));
+            monobankRates.rates.Add(await GetMonobankExchangeRateAsync("eur"));
+
+            BankRates privatRates = new BankRates("Privatbank");
+            privatRates.rates.Add(await GetPrivatBankExchangeRateAsync("usd"));
+            privatRates.rates.Add(await GetPrivatBankExchangeRateAsync("eur"));
+
+            BankRates OschadRates = new BankRates("OschadBank");
+            OschadRates.rates.Add(await GetOschadBankExchangeRateAsync("usd"));
+            OschadRates.rates.Add(await GetOschadBankExchangeRateAsync("eur"));
+
+            BankRates pumbRates = new BankRates("PUMB");
+            pumbRates.rates.Add(await GetBankExchangeRateAsync("usd", "pumb"));
+            pumbRates.rates.Add(await GetBankExchangeRateAsync("eur", "pumb"));
+
+            BankRates otpRates = new BankRates("Otpbank");
+            otpRates.rates.Add(await GetBankExchangeRateAsync("usd", "otp-bank"));
+            otpRates.rates.Add(await GetBankExchangeRateAsync("eur", "otp-bank"));
+
+            BankRates aBankRates = new BankRates("A-Bank");
+            aBankRates.rates.Add(await GetBankExchangeRateAsync("usd", "a-bank"));
+            aBankRates.rates.Add(await GetBankExchangeRateAsync("eur", "a-bank"));
+
+            //BankRates iziBankRates = new BankRates("Izibank");
+            //iziBankRates.rates.Add(await GetBankExchangeRateAsync("usd", "izibank"));
+            //iziBankRates.rates.Add(await GetBankExchangeRateAsync("eur", "izibank"));
+
+            BankRates sensebankRates = new BankRates("sensebank");
+            sensebankRates.rates.Add(await GetBankExchangeRateAsync("usd", "sensebank"));
+            sensebankRates.rates.Add(await GetBankExchangeRateAsync("eur", "sensebank"));
+
+            List<BankRates> banks = new List<BankRates>();
+            banks.Add(monobankRates);
+            banks.Add(privatRates);
+            banks.Add(OschadRates);
+            banks.Add(pumbRates);
+            banks.Add(otpRates);
+            banks.Add(aBankRates);
+            //banks.Add(iziBankRates);
+            banks.Add(sensebankRates);
+
+            return banks;
+        }
+
         public async Task<ExchangeRate> GetMonobankExchangeRateAsync(string currencyName)
         {
             const string cacheKey = "MonobankAPI";
