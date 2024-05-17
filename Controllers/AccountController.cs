@@ -11,15 +11,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly EmailSenderService _emailSenderService;
-        private readonly ExchangeRateService _exchangeRateService;
-        public AccountController(EmailSenderService emailSenderService, ExchangeRateService exchangeRateService, UserManager<User> userManager)
-        {
-            _emailSenderService = emailSenderService;
-            _exchangeRateService = exchangeRateService;
-            _userManager = userManager;
-        }
         public IActionResult Register()
         {
             return View();
@@ -81,7 +72,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
                 return View(model);
             }
         }
-        [HttpPost]
         public async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync();
@@ -105,52 +95,14 @@ namespace CBS_ASP.NET_Core_Course_Project.Controllers
             ViewBag.Username = User.Identity.Name;
             return View();
         }
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> AccountSettings()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var model = new AccountSettingsViewModel
-            {
-                Email = user.Login,
-                //WantsEmailNotifications = user.WantsEmailNotifications
-            };
-            return View(model);
-        }
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AccountSettings(AccountSettingsViewModel model)
+        public IActionResult SetEmailSendSetting(EmailSendSettingModel model)
         {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.GetUserAsync(User);
+            var user = Database.GetUserByLogin(User.Identity.Name);
+            user.sendEmails = model.sendEmails;
 
-                //user.WantsEmailNotifications = model.WantsEmailNotifications;
 
-                IdentityResult result = IdentityResult.Success;
-
-                if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.CurrentPassword))
-                {
-                    result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-                }
-                else
-                {
-                    result = await _userManager.UpdateAsync(user);
-                }
-
-                if (result.Succeeded)
-                {
-                    TempData["SuccessMessage"] = "Налаштування облікового запису успішно оновлено.";
-                    return RedirectToAction("Index", "Home");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
-
     }
 }

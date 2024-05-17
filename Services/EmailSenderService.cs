@@ -16,8 +16,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
         private readonly ExchangeRateService _exchangeRateService;
         public EmailSenderService(IConfiguration configuration, ExchangeRateService exchangeRateService)
         {
-            Console.WriteLine("dbvjkshgjfjksd");
-            Console.WriteLine($"{configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>()}");
 
             _emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             _exchangeRateService = exchangeRateService;
@@ -27,7 +25,7 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             string subject = "Денний курс валют";
             string body;
 
-            List<string> recipientEmails = Database.GetAllLogins();
+            List<string> recipientEmails = Database.GetEmailsWithSendEmailsOn();
 
             List<BankRates> banksRates = await _exchangeRateService.GetAllExchangeRates();
 

@@ -6,10 +6,11 @@ namespace CBS_ASP.NET_Core_Course_Project.Models
     {
         [Display(Name = "Login")]
         [Required]
+        [EmailAddress]
         public string Login { get; set; }
         [Display(Name = "Password")]
         [UIHint("Password")]
-        [MinLength(6)]
+        [MinLength(8)]
         public string Password { get; set; }
         [Display(Name = "Confirm password")]
         [UIHint("Password")]
@@ -21,11 +22,12 @@ namespace CBS_ASP.NET_Core_Course_Project.Models
     {
         [Display(Name = "Login")]
         [Required]
+        [EmailAddress]
         public string Login { get; set; }
         [Display(Name = "Password")]
         [UIHint("Password")]
         [Required]
-        [MinLength(6)]
+        [MinLength(8)]
         public string Password { get; set; }
     }
 }

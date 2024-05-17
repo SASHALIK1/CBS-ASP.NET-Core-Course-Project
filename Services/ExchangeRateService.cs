@@ -22,9 +22,9 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
 
         public async Task<List<BankRates>> GetAllExchangeRates()
         {
-            BankRates monobankRates = new BankRates("Monobank");
-            monobankRates.rates.Add(await GetMonobankExchangeRateAsync("usd"));
-            monobankRates.rates.Add(await GetMonobankExchangeRateAsync("eur"));
+            //BankRates monobankRates = new BankRates("Monobank");
+            //monobankRates.rates.Add(await GetBankExchangeRateAsync("usd", "monobank"));
+            //monobankRates.rates.Add(await GetBankExchangeRateAsync("eur", "monobank"));
 
             BankRates privatRates = new BankRates("Privatbank");
             privatRates.rates.Add(await GetPrivatBankExchangeRateAsync("usd"));
@@ -46,22 +46,18 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             aBankRates.rates.Add(await GetBankExchangeRateAsync("usd", "a-bank"));
             aBankRates.rates.Add(await GetBankExchangeRateAsync("eur", "a-bank"));
 
-            //BankRates iziBankRates = new BankRates("Izibank");
-            //iziBankRates.rates.Add(await GetBankExchangeRateAsync("usd", "izibank"));
-            //iziBankRates.rates.Add(await GetBankExchangeRateAsync("eur", "izibank"));
 
             BankRates sensebankRates = new BankRates("sensebank");
             sensebankRates.rates.Add(await GetBankExchangeRateAsync("usd", "sensebank"));
             sensebankRates.rates.Add(await GetBankExchangeRateAsync("eur", "sensebank"));
 
             List<BankRates> banks = new List<BankRates>();
-            banks.Add(monobankRates);
+            //banks.Add(monobankRates);
             banks.Add(privatRates);
             banks.Add(OschadRates);
             banks.Add(pumbRates);
             banks.Add(otpRates);
             banks.Add(aBankRates);
-            //banks.Add(iziBankRates);
             banks.Add(sensebankRates);
 
             return banks;
