@@ -34,21 +34,21 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             nbuRates.rates.Add(await _exchangeRateService.GetNBUExchangeRateAsync("eur"));
 
             StringBuilder stringbuilder = new StringBuilder();
-            stringbuilder.AppendLine("Сьогоднішні курси валют:");
+            stringbuilder.AppendLine("\nСьогоднішні курси валют:");
             foreach (string recipientEmail in recipientEmails)
             {
 
                 foreach (ExchangeRate exchangeRates in nbuRates.rates)
                 {
-                    stringbuilder.AppendLine("Курс НБУ");
-                    stringbuilder.AppendLine(exchangeRates.buyRate.ToString());
+                    stringbuilder.AppendLine("\nКурс НБУ");
+                    stringbuilder.AppendLine("\n" + exchangeRates.buyRate.ToString());
                 }
 
                 foreach (BankRates bank in banksRates)
                 {
                     foreach (ExchangeRate exchangeRate in bank.rates)
                     {
-                        stringbuilder.AppendLine($"{exchangeRate.currency}: {exchangeRate.buyRate} / {exchangeRate.sellRate}");
+                        stringbuilder.AppendLine($"\n{exchangeRate.currency}: {exchangeRate.buyRate} / {exchangeRate.sellRate}");
                     }
                 }
             }

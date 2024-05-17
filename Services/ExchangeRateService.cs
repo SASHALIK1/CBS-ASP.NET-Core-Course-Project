@@ -22,9 +22,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
 
         public async Task<List<BankRates>> GetAllExchangeRates()
         {
-            //BankRates monobankRates = new BankRates("Monobank");
-            //monobankRates.rates.Add(await GetBankExchangeRateAsync("usd", "monobank"));
-            //monobankRates.rates.Add(await GetBankExchangeRateAsync("eur", "monobank"));
 
             BankRates privatRates = new BankRates("Privatbank");
             privatRates.rates.Add(await GetPrivatBankExchangeRateAsync("usd"));
@@ -52,7 +49,6 @@ namespace CBS_ASP.NET_Core_Course_Project.Services
             sensebankRates.rates.Add(await GetBankExchangeRateAsync("eur", "sensebank"));
 
             List<BankRates> banks = new List<BankRates>();
-            //banks.Add(monobankRates);
             banks.Add(privatRates);
             banks.Add(OschadRates);
             banks.Add(pumbRates);
